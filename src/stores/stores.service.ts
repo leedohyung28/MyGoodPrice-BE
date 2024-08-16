@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Store } from 'src/stores/stores.schema';
+import { FilterQuery, Model } from 'mongoose';
+import { Store, StoreDocument } from 'src/stores/stores.schema';
 
 @Injectable()
 export class StoresService {
   constructor(
-    @InjectModel(Store.name) private readonly storeModel: Model<Store>,
+    @InjectModel(Store.name) private storeModel: Model<StoreDocument>,
   ) {}
 
-  async findAll(): Promise<Store[]> {
-    return this.storeModel.find().exec();
+  async findOne(storeFilterQuery: FilterQuery<Store>): Promise<Store> {
+    return this.storeModel.findOne(storeFilterQuery);
+  }
+
+  async find(storeFilterQuery: FilterQuery<Store>): Promise<Store[]> {
+    return this.storeModel.findOne(storeFilterQuery);
   }
 }

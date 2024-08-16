@@ -6,18 +6,19 @@ import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { StoresController } from './stores/stores.controller';
 import { StoresModule } from './stores/stores.module';
-import { Mongoose } from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
+import { StoresService } from './stores/stores.service';
 
 @Module({
   imports: [
     AuthModule,
     StoresModule,
     MongooseModule.forRoot(
-      'mongodb://admin:mygoodprice@svc.sel4.cloudtype.app:30896/MyGoodPrice',
-      {
-        connectionName: 'Stores',
-      },
+      'mongodb://admin:mygoodprice@svc.sel4.cloudtype.app:30896',
+      // {
+      //   dbName: 'MyGoodPrice',
+      //   connectionName: 'Stores',
+      // },
     ),
   ],
   controllers: [
@@ -27,5 +28,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     StoresController,
   ],
   providers: [AppService],
+  exports: [AppService],
 })
 export class AppModule {}
