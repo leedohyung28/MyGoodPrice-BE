@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type StoreDocument = Store & Document;
+export type StoreDocument = Stores & Document;
 @Schema()
-export class Store {
+export class Stores {
   @Prop()
   name: string;
 
@@ -21,5 +21,23 @@ export class Store {
 
   @Prop()
   tel: string;
+
+  @Prop()
+  menu1?: string;
+
+  @Prop()
+  price1?: number;
+
+  @Prop()
+  menu2?: string;
+
+  @Prop()
+  price2?: number;
+
+  @Prop()
+  menu3?: string;
+
+  @Prop()
+  price3?: number;
 }
-export const StoreSchema = SchemaFactory.createForClass(Store);
+export const StoreSchema = SchemaFactory.createForClass(Stores);
