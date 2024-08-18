@@ -4,6 +4,10 @@ import { AppService } from './app.service';
 import { StoresModule } from './stores/stores.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Module({
   imports: [
@@ -18,6 +22,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         dbName: 'MyGoodPrice',
       }),
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
