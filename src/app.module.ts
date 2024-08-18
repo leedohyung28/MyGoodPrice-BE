@@ -1,31 +1,25 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersController } from './users/users.controller';
-import { AuthController } from './auth/auth.controller';
-import { AuthModule } from './auth/auth.module';
-import { StoresController } from './stores/stores.controller';
 import { StoresModule } from './stores/stores.module';
-import { Mongoose } from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    AuthModule,
     StoresModule,
-    MongooseModule.forRoot(
-      'mongodb://admin:mygoodprice@svc.sel4.cloudtype.app:30896/MyGoodPrice',
-      {
-        connectionName: 'Stores',
-      },
-    ),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        uri: `mongodb://${configService.get('DB_USER')}:${configService.get('DB_PASSWORD')}@${configService.get('DB_URI')}`,
+        dbName: 'MyGoodPrice',
+      }),
+    }),
   ],
-  controllers: [
-    AppController,
-    UsersController,
-    AuthController,
-    StoresController,
-  ],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
