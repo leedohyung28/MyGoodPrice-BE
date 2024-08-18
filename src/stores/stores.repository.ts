@@ -7,9 +7,7 @@ import { Stores, StoreDocument } from 'src/stores/stores.schema';
 export class StoresRepository {
   constructor(
     @InjectModel(Stores.name) private storeModel: Model<StoreDocument>,
-  ) {
-    console.log(Stores.name);
-  }
+  ) {}
 
   async findOne(storeFilterQuery: FilterQuery<Stores>): Promise<Stores> {
     try {

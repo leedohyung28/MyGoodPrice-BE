@@ -1,23 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
 import { StoresModule } from './stores/stores.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    AuthModule,
     StoresModule,
-    MongooseModule.forRoot(
-      `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_URI}`,
-      {
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        uri: `mongodb://${configService.get('DB_USER')}:${configService.get('DB_PASSWORD')}@${configService.get('DB_URI')}`,
         dbName: 'MyGoodPrice',
-      },
-    ),
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
