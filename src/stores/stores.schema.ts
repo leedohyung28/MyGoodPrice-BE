@@ -36,8 +36,7 @@ export class Stores {
 
   @Prop()
   menu3?: string;
-
-  @Prop()
-  price3?: number;
 }
-export const StoreSchema = SchemaFactory.createForClass(Stores);
+
+const _StoreSchema = SchemaFactory.createForClass(Stores);
+export const StoreSchema = _StoreSchema
