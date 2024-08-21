@@ -19,6 +19,11 @@ export class StoreReturnDTO {
 
     @Expose()
     tel: string;
+
+	@Expose()
+    menu: string;
+
+
     
 }
 

@@ -23,20 +23,16 @@ export class Stores {
   tel: string;
 
   @Prop()
-  menu1?: string;
+  longitude?: string;
 
   @Prop()
-  price1?: number;
+  latitude?: string;
 
   @Prop()
-  menu2?: string;
+  menu : string;
 
-  @Prop()
-  price2?: number;
-
-  @Prop()
-  menu3?: string;
 }
 
 const _StoreSchema = SchemaFactory.createForClass(Stores);
+_StoreSchema.set('collection', 'PreprocessStores');
 export const StoreSchema = _StoreSchema
