@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { StoresRepository } from './stores.repository';
 import { plainToInstance } from 'class-transformer';
-import { StoreReturnDTO, StoresReturnDTO } from './strores.DTO';
+import { StoreReturnDTO, StoresReturnDTO } from './stores.DTO';
 import { ObjectId } from 'typeorm';
+import { DistanceStoresDTO, LocationReturnDTO } from 'src/locations/locations.DTO';
 
 @Injectable()
 export class StoresService {
@@ -13,41 +14,67 @@ export class StoresService {
     return plainToInstance(StoreReturnDTO, store);
   }
 
+  //위도, 경도가 없는 데이터는???????????
+  async getLocationById(id: string): Promise<LocationReturnDTO> {
+    const store = await this.storesRepository.findById(id);
+    return plainToInstance(LocationReturnDTO, store);
+  }
+
+  async getStoresByDistance(longitude,latitude,distance)  {
+
+    function getDistance(lat1,lng1,lat2,lng2) {
+      function deg2rad(deg) {
+          return deg * (Math.PI/180)
+      }
+      const dLat = deg2rad(lat2-lat1);  
+      const dLon = deg2rad(lng2-lng1);
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      let dis = 6371 * c; 
+      dis = Math.round(dis * 1000) / 1000
+      return dis
+    }
+
+    const results = await this.storesRepository.find({});
+    const stores = plainToInstance(DistanceStoresDTO, results)
+    const getStores = stores.filter((store)=>{
+      const dis = getDistance(latitude, longitude, store.latitude,store.longitude)
+        return dis <= distance
+    })
+
+    return getStores;
+  }
+
   async getStoresBy(
     category?: string,
-    city?: string,
-    name?: string,
-    lowPrice?: number,
-    highPrice?: number,
+    location?: string,
+    search?: string,
+    minPrice?: number | "null",
+    maxPrice?: number | "null",
   ): Promise<StoresReturnDTO[]> {
     const query: any = {};
 
-    if (category) {
+    if (category && category !== "null") {
       query.category = category;
-    }
-    if (city) {
+    } 
+    if (location !== "null") {
+      const state = location.split(' ')[0]
+      const city = location.split(' ')[1]
+      console.log("state & city", state,city)
+      query.state = state;
       query.city = city;
-    }
-    if (name) {
-      query.name = new RegExp(name, 'i');
-    }
 
-    if (lowPrice !== undefined || highPrice !== undefined) {
-      query.price1 = {};
-      if (lowPrice !== undefined) {
-        query.price1.$gte = lowPrice; // lowPrice 이상
-        query.price1['$gte'] = parseInt(query.price1['$gte']);
-      }
-      if (highPrice !== undefined) {
-        query.price1.$lte = highPrice; // highPrice 이하
-        query.price1['$lte'] = parseInt(query.price1['$lte']);
-      }
     }
-
-    console.log(query);
-    const stores = await this.storesRepository.find(query);
-    return plainToInstance(StoresReturnDTO, stores);
+    if (search && search !== "null") {
+      query.name = new RegExp(search, 'i');
+    }
+      console.log(query);
+      const stores = await this.storesRepository.find(query);
+      return plainToInstance(StoresReturnDTO, stores);
   }
+
+
+
 
   async addLike(storeId: string, store: StoreReturnDTO): Promise<void> {
     store.likes += 1;

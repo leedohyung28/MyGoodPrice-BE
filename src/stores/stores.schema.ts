@@ -28,8 +28,19 @@ export class Stores {
   @Prop()
   latitude?: string;
 
-  @Prop()
-  menu: string;
+  @Prop({
+    type: String,
+    get: (data:string) => {
+      try{
+        return JSON.parse(data.replace(/'/g, '"'));
+      } catch(err){
+        return []
+      }
+    },
+    set: (data: any[]) => JSON.stringify(data),
+  })
+  menu: any[];
+
 
   @Prop({ default: 0 })
   likes: number;

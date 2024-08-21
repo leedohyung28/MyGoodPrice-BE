@@ -13,6 +13,7 @@ dotenv.config();
 
 import { APP_PIPE } from '@nestjs/core';
 import { MyplacesModule } from './myplaces/myplaces.module';
+import { LocationsModule } from './locations/locations.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { MyplacesModule } from './myplaces/myplaces.module';
     UsersModule,
     LikesModule,
     MyplacesModule,
+    LocationsModule,
   ],
   controllers: [AppController],
   providers: [AppService,

@@ -33,6 +33,21 @@ export class StoresRepository {
     }
   }
 
+  async findPrice(storeFilterQuery: FilterQuery<Stores>,minPrice,maxPrice): Promise<Stores[]> {
+    try {
+      return this.storeModel.find(storeFilterQuery, {
+        name: 1,
+        state: 1,
+        city: 1,
+        category: 1,
+        address: 1,
+        'menu.$': 1  
+    });
+    } catch (err) {
+      console.error('Failed to fine : ', err);
+    }
+  }
+
   async update(storeId: string, updateData: Partial<Stores>): Promise<Stores> {
     try {
       const updatedStore = await this.storeModel.findByIdAndUpdate(

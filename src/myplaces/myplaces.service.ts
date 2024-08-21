@@ -80,7 +80,8 @@ export class MyplacesService {
           acc[category] = { count: 0, totalPrice: 0 };
         }
         if (store.menu && store.menu.length > 0) {
-          const items = JSON.parse(store.menu.replace(/'/g, '"'));
+          // const items = JSON.parse(store.menu.replace(/'/g, '"'));
+          const items = store.menu;
           items.forEach((item) => {
             if (item.price) {
               acc[category].count += 1;
