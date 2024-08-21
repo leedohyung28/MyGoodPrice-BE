@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { StoresModule } from './stores/stores.module';
@@ -9,6 +9,8 @@ import { UsersModule } from './users/users.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
+
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -27,6 +29,11 @@ dotenv.config();
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe, //FOR PIPE(validation )
+    },
+  ],
 })
 export class AppModule {}
