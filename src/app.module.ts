@@ -4,6 +4,12 @@ import { AppService } from './app.service';
 import { StoresModule } from './stores/stores.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
 import { APP_PIPE } from '@nestjs/core';
 
 @Module({
@@ -19,6 +25,8 @@ import { APP_PIPE } from '@nestjs/core';
         dbName: 'MyGoodPrice',
       }),
     }),
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService,
