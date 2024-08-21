@@ -30,10 +30,15 @@ export class StoresController {
     @Query('category') category?: string,
     @Query('location') location?: string,
     @Query('search') search?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
     @Query('minPrice') minPrice?: number | "null",
     @Query('maxPrice') maxPrice?: number| "null",
   ): Promise<StoresReturnDTO[] | void> {
-
+    if (page && limit){
+      console.log("here")
+      return await this.storeService.pagination(page,limit);
+    } else {
       return await this.storeService.getStoresBy(
         category,
         location,
@@ -41,6 +46,7 @@ export class StoresController {
         minPrice,
         maxPrice,
       );
+    }
 
     }
   

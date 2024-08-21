@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, QueryOptions } from 'mongoose';
 import { Stores, StoreDocument } from 'src/stores/stores.schema';
 
 @Injectable()
@@ -28,6 +28,15 @@ export class StoresRepository {
   async find(storeFilterQuery: FilterQuery<Stores>): Promise<Stores[]> {
     try {
       return this.storeModel.find(storeFilterQuery);
+    } catch (err) {
+      console.error('Failed to fine : ', err);
+    }
+  }
+
+
+  async findOptions(storeFilterQuery: FilterQuery<Stores>): Promise<Stores[]> {
+    try {
+      return this.storeModel.find().skip(storeFilterQuery["skip"]).limit(storeFilterQuery["limit"]);
     } catch (err) {
       console.error('Failed to fine : ', err);
     }
