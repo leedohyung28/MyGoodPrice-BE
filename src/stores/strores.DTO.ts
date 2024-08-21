@@ -23,10 +23,36 @@ export class StoreReturnDTO {
 	@Expose()
     menu: string;
 
-
-    
+	@Expose()
+    likes: number; 
 }
 
-export class StoresReturnDTO extends StoreReturnDTO {
-    
-}[]
+@Exclude()
+export class StoresReturnDTO {
+	@Expose()
+	name: string;
+
+	@Expose()
+	state: string;
+
+    @Expose()
+	city: string;
+
+    @Expose()
+	category: string;
+
+    @Expose()
+	address: string;
+
+    @Expose()
+    tel: string;
+
+	@Expose()
+    menu: string;
+
+	@Expose()
+    likes: number; 
+
+	@Expose()
+	reviews: string;
+}

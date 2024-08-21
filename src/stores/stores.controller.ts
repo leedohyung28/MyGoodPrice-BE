@@ -1,15 +1,16 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common';
 import { StoresService } from './stores.service';
 import { Stores } from './stores.schema';
-import { StoreReturnDTO } from './strores.DTO';
+import { StoreReturnDTO, StoresReturnDTO } from './strores.DTO';
+import { ObjectId } from 'typeorm';
 
 @Controller('stores')
 export class StoresController {
   constructor(private readonly storeService: StoresService) {}
 
-  @Get(':storeName')
-  async getStoreName(@Param('storeName') storeName: string): Promise<StoreReturnDTO> {
-    return (await this.storeService.getStoresByName(storeName));
+  @Get(':storeId')
+  async getStoreName(@Param('storeId') storeId: string): Promise<StoreReturnDTO> {
+    return (await this.storeService.getStoreById(storeId));
   }
 
   @Get()
@@ -20,10 +21,8 @@ export class StoresController {
       @Query('name') name?: string,
       @Query('lowPrice') lowPrice?: number,
       @Query('highPrice') highPrice?: number
-    ): Promise<StoreReturnDTO[]> {
+    ): Promise<StoresReturnDTO[]> {
 
       return await this.storeService.getStoresBy(category, city, name,lowPrice, highPrice);    
-}
-
-  
+    }
 }

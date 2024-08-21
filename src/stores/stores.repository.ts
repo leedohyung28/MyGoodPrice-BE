@@ -17,6 +17,15 @@ export class StoresRepository {
     }
   }
 
+  async findById(storeFilterQuery: string): Promise<Stores> {
+    try{
+      return this.storeModel.findById(storeFilterQuery);
+
+    }catch(err){
+      console.log(err)
+    }
+  }
+
   async find(storeFilterQuery: FilterQuery<Stores>): Promise<Stores[]> {
     try {
       return this.storeModel.find(storeFilterQuery);
