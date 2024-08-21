@@ -25,17 +25,19 @@ export class StoresService {
     if (name) {
       query.name = new RegExp(name, 'i'); 
     }
-    query.price1 ={}
+
     if (lowPrice !== undefined || highPrice !== undefined) {
+      query.price1 ={}
       if (lowPrice !== undefined) {
           query.price1.$gte = lowPrice; // lowPrice 이상
+          query.price1['$gte'] = parseInt(query.price1['$gte'] )
       }
       if (highPrice !== undefined) {
-          query.price1.$lte = highPrice; // highPrice 이하
+          query.price1.$lte = highPrice; // highPrice 이하          
+          query.price1['$lte'] = parseInt(query.price1['$lte'] )
       }
       }
-      query.price1['$gte'] = parseInt(query.price1['$gte'] )
-      query.price1['$lte'] = parseInt(query.price1['$lte'] )
+
 
     console.log(query)
     const stores = await this.storesRepository.find(query)
