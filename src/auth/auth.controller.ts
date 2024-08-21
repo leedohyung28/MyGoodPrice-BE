@@ -43,7 +43,6 @@ export class AuthController {
   async getProfile(@Request() req) {
     const accessToken = req.cookies['access_token'];
     if (accessToken) return await this.userService.saveUser(accessToken);
-    // return (await this.authService.getProfile(accessToken)).data;
     throw new UnauthorizedException('No access token');
   }
 

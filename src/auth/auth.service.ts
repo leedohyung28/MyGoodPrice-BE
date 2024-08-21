@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { Users } from '../users/users.schema';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
+  constructor(private readonly configService: ConfigService) {}
+
   async getNewAccessToken(refreshToken: string): Promise<string> {
     try {
       const response = await axios.post(
         'https://accounts.google.com/o/oauth2/token',
         {
-          client_id: process.env.GOOGLE_CLIENT_ID,
-          client_secret: process.env.GOOGLE_CLIENT_SECRET,
+          client_id: this.configService.get('GOOGLE_CLIENT_ID'),
+          client_secret: this.configService.get('GOOGLE_CLIENT_SECRET'),
           refresh_token: refreshToken,
           grant_type: 'refresh_token',
         },

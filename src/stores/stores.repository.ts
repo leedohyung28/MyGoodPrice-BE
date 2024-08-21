@@ -13,16 +13,15 @@ export class StoresRepository {
     try {
       return this.storeModel.findOne(storeFilterQuery);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fine one : ', err);
     }
   }
 
   async findById(storeFilterQuery: string): Promise<Stores> {
-    try{
+    try {
       return this.storeModel.findById(storeFilterQuery);
-
-    }catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -30,7 +29,21 @@ export class StoresRepository {
     try {
       return this.storeModel.find(storeFilterQuery);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fine : ', err);
+    }
+  }
+
+  async update(storeId: string, updateData: Partial<Stores>): Promise<Stores> {
+    try {
+      const updatedStore = await this.storeModel.findByIdAndUpdate(
+        storeId,
+        { $set: updateData },
+        { new: true },
+      );
+      return updatedStore;
+    } catch (err) {
+      console.error('Failed to update store: ', err);
+      throw err;
     }
   }
 }

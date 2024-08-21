@@ -29,16 +29,15 @@ export class Stores {
   latitude?: string;
 
   @Prop()
-  menu : string;
+  menu: string;
 
-  @Prop({default:0})
-  likes : number;
+  @Prop({ default: 0 })
+  likes: number;
 
-  @Prop({default:"check"})
-  reviews : string;
-
+  @Prop({ default: 'check' })
+  reviews: string;
 }
 
 const _StoreSchema = SchemaFactory.createForClass(Stores);
 _StoreSchema.set('collection', 'PreprocessStores');
-export const StoreSchema = _StoreSchema
+export const StoreSchema = _StoreSchema;

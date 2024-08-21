@@ -22,11 +22,38 @@ export class UsersRepository {
           likes: [],
         });
         await newUser.save();
-      }
 
-      return user;
+        return newUser;
+      } else {
+        return existingUser;
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Failed to find existing user :', err);
     }
+  }
+
+  async updateUser(
+    id: string,
+    name?: string,
+    email?: string,
+    provider?: string,
+    likes?: string[],
+  ): Promise<void> {
+    const updateData: Partial<Users> = {};
+
+    if (name) {
+      updateData.name = name;
+    }
+    if (email) {
+      updateData.email = email;
+    }
+    if (provider) {
+      updateData.provider = provider;
+    }
+    if (likes) {
+      updateData.likes = likes;
+    }
+
+    await this.userModel.updateOne({ id }, updateData).exec();
   }
 }

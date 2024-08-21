@@ -11,5 +11,6 @@ import { StoresRepository } from './stores.repository';
   ],
   controllers: [StoresController],
   providers: [StoresService, StoresRepository],
+  exports: [StoresService],
 })
 export class StoresModule {}
