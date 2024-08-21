@@ -13,7 +13,6 @@ export class StoresService {
     const store = await this.storesRepository.findById(id);
     return plainToInstance(StoreReturnDTO, store);
   }
-
   //위도, 경도가 없는 데이터는???????????
   async getLocationById(id: string): Promise<LocationReturnDTO> {
     const store = await this.storesRepository.findById(id);
@@ -54,6 +53,7 @@ export class StoresService {
   ): Promise<StoresReturnDTO[]> {
     const query: any = {};
 
+    //쿼리에 아무것도 안오면? 페이지네이션인데..이거 어떻게 처리할까
     if (category && category !== "null") {
       query.category = category;
     } 
@@ -70,11 +70,22 @@ export class StoresService {
     }
       console.log(query);
       const stores = await this.storesRepository.find(query);
+
       return plainToInstance(StoresReturnDTO, stores);
   }
 
+  async pagination(page:number, limit:number): Promise<StoresReturnDTO[]> {
+    const startStore = (page-1) * limit;
+    console.log(startStore)
+    try{
+      const stores = await this.storesRepository.findOptions({limit, skip: page})
+      console.log(stores)
+      return plainToInstance(StoresReturnDTO, stores) 
+    }catch(e) {
+      console.log(e)
+    }
 
-
+  }
 
   async addLike(storeId: string, store: StoreReturnDTO): Promise<void> {
     store.likes += 1;
