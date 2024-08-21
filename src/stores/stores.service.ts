@@ -50,14 +50,16 @@ export class StoresService {
     search?: string,
     minPrice?: number | "null",
     maxPrice?: number | "null",
+    page?: number | "null",
+    limit?: number | "null",
   ): Promise<StoresReturnDTO[]> {
     const query: any = {};
+    let stores = [];
 
-    //쿼리에 아무것도 안오면? 페이지네이션인데..이거 어떻게 처리할까
     if (category && category !== "null") {
       query.category = category;
     } 
-    if (location !== "null") {
+    if (location && location !== "null") {
       const state = location.split(' ')[0]
       const city = location.split(' ')[1]
       console.log("state & city", state,city)
@@ -68,24 +70,42 @@ export class StoresService {
     if (search && search !== "null") {
       query.name = new RegExp(search, 'i');
     }
-      console.log(query);
-      const stores = await this.storesRepository.find(query);
 
-      return plainToInstance(StoresReturnDTO, stores);
-  }
+    if (page && limit && page !== "null" && limit !== "null") {
+      console.log(1, query)
+      const results = await this.storesRepository.findOptions(query,{limit, skip:page});
+      stores =  plainToInstance(StoresReturnDTO, results);
 
-  async pagination(page:number, limit:number): Promise<StoresReturnDTO[]> {
-    const startStore = (page-1) * limit;
-    console.log(startStore)
-    try{
-      const stores = await this.storesRepository.findOptions({limit, skip: page})
-      console.log(stores)
-      return plainToInstance(StoresReturnDTO, stores) 
-    }catch(e) {
-      console.log(e)
+    } else {
+      console.log(2, query)
+
+      const results = await this.storesRepository.find(query);
+      stores =  plainToInstance(StoresReturnDTO, results);
+
     }
-
+    if (minPrice && maxPrice && minPrice !== null && maxPrice !== null) {
+      const prevStores = stores;
+      const new_stores = []
+      prevStores.forEach((store)=> {
+        if(store.menu.length !== 0) {
+          const new_menu = store.menu.filter((menu)=> {
+            return (menu['price'] <= maxPrice && menu['price'] >= minPrice)
+          })
+          if(new_menu.length !== 0){
+            new_stores.push({name: store.name, state:store.state, city:store.city,
+              category: store.category, address: store.address, tel:store.tel,
+              menu: new_menu 
+                })
+            }
+          }
+        }
+      )
+      stores= new_stores
+    }
+    return stores
   }
+
+
 
   async addLike(storeId: string, store: StoreReturnDTO): Promise<void> {
     store.likes += 1;
