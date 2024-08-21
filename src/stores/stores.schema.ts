@@ -31,6 +31,12 @@ export class Stores {
   @Prop()
   menu : string;
 
+  @Prop({default:0})
+  likes : number;
+
+  @Prop({default:"check"})
+  reviews : string;
+
 }
 
 const _StoreSchema = SchemaFactory.createForClass(Stores);
