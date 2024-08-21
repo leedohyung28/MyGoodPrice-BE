@@ -37,10 +37,15 @@ export class LikesController {
       throw new Error('Access token is missing');
     }
 
+    const store = await this.storeService.getStoreById(body.storeId);
+    if (!store) {
+      throw new Error('No Store for this StoreId');
+    }
+
     const likes = await this.userService.getUserLikes(accessToken);
     likes.push(body.storeId);
     await this.userService.updateUserLike(accessToken, likes);
-    return { message: 'Store added to likes', likes: likes };
+    await this.storeService.addLike(body.storeId, store);
   }
 
   @Delete()
@@ -51,9 +56,14 @@ export class LikesController {
       throw new Error('Access token is missing');
     }
 
+    const store = await this.storeService.getStoreById(body.storeId);
+    if (!store) {
+      throw new Error('No Store for this StoreId');
+    }
+
     const likes = await this.userService.getUserLikes(accessToken);
     const updatedLikes = likes.filter((storeId) => storeId !== body.storeId);
     await this.userService.updateUserLike(accessToken, updatedLikes);
-    return { message: 'Store removed from likes', likes: updatedLikes };
+    await this.storeService.removeLike(body.storeId, store);
   }
 }

@@ -48,4 +48,14 @@ export class StoresService {
     const stores = await this.storesRepository.find(query);
     return plainToInstance(StoresReturnDTO, stores);
   }
+
+  async addLike(storeId: string, store: StoreReturnDTO): Promise<void> {
+    store.likes += 1;
+    await this.storesRepository.update(storeId, { likes: store.likes });
+  }
+
+  async removeLike(storeId: string, store: StoreReturnDTO): Promise<void> {
+    store.likes = Math.max(0, store.likes - 1);
+    await this.storesRepository.update(storeId, { likes: store.likes });
+  }
 }
