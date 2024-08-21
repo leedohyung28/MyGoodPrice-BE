@@ -28,4 +28,38 @@ export class UsersService {
       console.error('Failed to save user', err);
     }
   }
+
+  async updateUserLike(token: string, likes: string[]) {
+    try {
+      const profileResponse = await this.authService.getProfile(token);
+      const profileData = profileResponse.data;
+
+      await this.usersRepository.updateUser(
+        profileData.id,
+        undefined,
+        undefined,
+        undefined,
+        likes,
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async getUserLikes(token: string) {
+    try {
+      const profileResponse = await this.authService.getProfile(token);
+      const profileData = profileResponse.data;
+
+      const user = await this.usersRepository.findUser(profileData);
+      if (user) {
+        return user.likes;
+      } else {
+        console.error('User not found');
+        return null;
+      }
+    } catch (err) {
+      console.error('Failed to get user likes :', err);
+    }
+  }
 }

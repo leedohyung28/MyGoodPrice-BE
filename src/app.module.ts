@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { LikesModule } from './likes/likes.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -27,6 +28,7 @@ import { APP_PIPE } from '@nestjs/core';
     }),
     AuthModule,
     UsersModule,
+    LikesModule,
   ],
   controllers: [AppController],
   providers: [AppService,

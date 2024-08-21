@@ -13,7 +13,7 @@ export class StoresRepository {
     try {
       return this.storeModel.findOne(storeFilterQuery);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fine one : ', err);
     }
   }
 
@@ -30,7 +30,7 @@ export class StoresRepository {
     try {
       return this.storeModel.find(storeFilterQuery);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fine : ', err);
     }
   }
 }
