@@ -11,10 +11,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { CheckTokenExpiryGuard } from './auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -38,8 +42,8 @@ export class AuthController {
   @Get('profile')
   async getProfile(@Request() req) {
     const accessToken = req.cookies['access_token'];
-    if (accessToken)
-      return (await this.authService.getProfile(accessToken)).data;
+    if (accessToken) return await this.userService.saveUser(accessToken);
+    // return (await this.authService.getProfile(accessToken)).data;
     throw new UnauthorizedException('No access token');
   }
 

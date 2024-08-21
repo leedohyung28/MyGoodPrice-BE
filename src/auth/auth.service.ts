@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { Users } from '../users/users.schema';
 
 @Injectable()
 export class AuthService {
