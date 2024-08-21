@@ -34,9 +34,9 @@ export class StoresRepository {
   }
 
 
-  async findOptions(storeFilterQuery: FilterQuery<Stores>): Promise<Stores[]> {
+  async findOptions(storeFilterQuery: FilterQuery<Stores>, QueryOptions): Promise<Stores[]> {
     try {
-      return this.storeModel.find().skip(storeFilterQuery["skip"]).limit(storeFilterQuery["limit"]);
+      return this.storeModel.find(storeFilterQuery).skip(QueryOptions["skip"]).limit(QueryOptions["limit"]);
     } catch (err) {
       console.error('Failed to fine : ', err);
     }
