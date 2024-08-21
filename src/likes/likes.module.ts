@@ -9,5 +9,6 @@ import { UsersModule } from 'src/users/users.module';
   imports: [StoresModule, UsersModule],
   controllers: [LikesController],
   providers: [LikesService],
+  exports: [LikesService],
 })
 export class LikesModule {}
