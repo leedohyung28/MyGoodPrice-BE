@@ -1,4 +1,4 @@
-import { Controller, Post, Request, Res } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Request, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Response } from 'express';
 
@@ -23,6 +23,17 @@ export class UsersController {
       res.status(400).json({
         message: 'Cannot Get Kakao User',
       });
+    }
+  }
+
+  @Get('kakao/logout')
+  async logoutKakao(@Request() req, @Res() res: Response) {
+    try {
+      await this.usersService.logoutUser(req, res);
+      res.status(200).send({ message: 'Logout Success' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Logout Failed' });
     }
   }
 }

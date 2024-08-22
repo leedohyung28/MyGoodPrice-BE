@@ -111,4 +111,8 @@ export class UsersService {
       console.error('Failed to get user likes :', err);
     }
   }
+
+  async logoutUser(req: Request, res: Response) {
+    await this.usersRepository.clearCookie(req, res);
+  }
 }
