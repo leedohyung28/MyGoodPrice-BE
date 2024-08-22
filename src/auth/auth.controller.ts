@@ -42,7 +42,7 @@ export class AuthController {
   @Get('profile')
   async getProfile(@Request() req) {
     const accessToken = req.cookies['access_token'];
-    if (accessToken) return await this.userService.saveUser(accessToken);
+    if (accessToken) return await this.userService.googleUser(accessToken);
     throw new UnauthorizedException('No access token');
   }
 
