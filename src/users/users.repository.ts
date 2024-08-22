@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserDocument, Users } from './users.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class UsersRepository {
@@ -64,5 +65,11 @@ export class UsersRepository {
     }
 
     await this.userModel.updateOne({ id }, updateData).exec();
+  }
+
+  async clearCookie(req: Request, res: Response) {
+    const refreshToken = req.cookies['refresh_token'];
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
   }
 }
