@@ -9,26 +9,35 @@ export class UsersRepository {
     @InjectModel(Users.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async findUser(user: Users): Promise<Users> {
+  async addUser(user: Users): Promise<Users> {
     try {
+      const newUser = new this.userModel({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        provider: user.provider,
+        likes: [],
+      });
       const existingUser = await this.userModel.findOne({ id: user.id });
 
       if (!existingUser) {
-        const newUser = new this.userModel({
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          provider: user.provider,
-          likes: [],
-        });
         await newUser.save();
-
         return newUser;
       } else {
         return existingUser;
       }
     } catch (err) {
-      console.error('Failed to find existing user :', err);
+      console.error(err);
+    }
+  }
+
+  async findUser(userId: string): Promise<Users | null> {
+    try {
+      const existingUser = await this.userModel.findOne({ id: userId });
+      return existingUser;
+    } catch (err) {
+      console.error(err);
+      return null;
     }
   }
 
