@@ -3,6 +3,9 @@ import { Exclude, Expose, Transform } from "class-transformer";
 @Exclude()
 export class StoreReturnDTO {
 	@Expose()
+	id: string;
+
+	@Expose()
 	name: string;
 
 	@Expose()
@@ -29,6 +32,9 @@ export class StoreReturnDTO {
 
 @Exclude()
 export class StoresReturnDTO {
+	@Expose()
+	id: string;
+	
 	@Expose()
 	name: string;
 
