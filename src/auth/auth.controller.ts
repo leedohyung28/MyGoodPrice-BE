@@ -12,12 +12,14 @@ import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { CheckTokenExpiryGuard } from './auth.guard';
 import { UsersService } from 'src/users/users.service';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Get('google')
@@ -35,7 +37,7 @@ export class AuthController {
       httpOnly: true,
     });
 
-    res.redirect('http://localhost:3000/auth/profile');
+    res.redirect(`${this.configService.get('BACKEND_URL')}/auth/profile`);
   }
 
   @UseGuards(CheckTokenExpiryGuard)
@@ -52,6 +54,6 @@ export class AuthController {
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
     this.authService.revokeGoogleToken(refreshToken);
-    res.redirect('http://localhost:3000/');
+    res.redirect(this.configService.get('BACKEND_URL'));
   }
 }
