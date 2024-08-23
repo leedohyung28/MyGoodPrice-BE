@@ -17,7 +17,7 @@ export class GetStoresQueryDTO {
   page: number | "null";
 
   @IsDefined()
-  limit: number | "null";
+  limit: string;
 
   @IsDefined()
   minPrice: number | "null";

@@ -5,6 +5,7 @@ import { StoreReturnDTO, StoresReturnDTO } from './stores.DTO';
 import { DistanceStoresDTO} from 'src/locations/locations.DTO';
 import { GetStoresQueryDTO } from './query.DTO';
 import { getDistance } from 'src/common/utils/distance';
+import { stringify } from 'querystring';
 
 @Injectable()
 export class StoresService {
@@ -25,7 +26,6 @@ export class StoresService {
     })
     return getStores;
   }
-
   async getStoresBy(queryParams: GetStoresQueryDTO): Promise<StoresReturnDTO[]> {
     const {
       category,
@@ -33,9 +33,12 @@ export class StoresService {
       search,
       minPrice,
       maxPrice,
-      page,
-      limit
+      page
     } = queryParams;
+    let {limit} = queryParams
+    const limit_new = parseInt(limit)
+    
+    
   
     const query: any = {};
     let stores = [];
@@ -52,33 +55,46 @@ export class StoresService {
     if (search !== "null") {
       query.name = new RegExp(search, 'i');
     }
-    if (page !== "null" && limit !== "null") {
-      const results = await this.storesRepository.findOptions(query,{limit, skip:(page-1)*limit});
-      stores =  plainToInstance(StoresReturnDTO, results);
-    } else {
-      const results = await this.storesRepository.find(query);
-      stores =  plainToInstance(StoresReturnDTO, results);
 
-    }
+    const results = await this.storesRepository.find(query);
+    stores =  plainToInstance(StoresReturnDTO, results);
+
     if (minPrice !== "null" && maxPrice !== "null") {
       const prevStores = stores;
       const new_stores = []
       prevStores.forEach((store)=> {
+        let new_menu = []
         if(store.menu.length !== 0) {
-          const new_menu = store.menu.filter((menu)=> {
+          new_menu = store.menu.filter((menu)=> {
             return (menu['price'] <= maxPrice && menu['price'] >= minPrice)
           })
-          new_stores.push({id: store.id, name: store.name, state:store.state, city:store.city,
-            category: store.category, address: store.address, tel:store.tel,
-            menu: new_menu , likes: store.likes
-              })
+          if (new_menu.length !== 0){
+            new_stores.push({
+              id: store.id, 
+              name: store.name, 
+              state:store.state, 
+              city:store.city,
+              category: store.category, 
+              address: store.address, 
+              tel:store.tel,
+              menu: new_menu , 
+              likes: store.likes
+                })
+            }
           }
         }
       )
-      stores= new_stores
+      stores = new_stores
+    }
+
+    if (page!== "null" && limit !=="null"){
+      console.log(typeof limit_new)
+      const skip = limit_new * (page-1)
+      stores =  stores.slice(skip, (skip+limit_new))
     }
     return stores
   }
+
 
   async addLike(storeId: string, store: StoreReturnDTO): Promise<void> {
     store.likes += 1;
