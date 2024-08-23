@@ -53,7 +53,7 @@ export class StoresService {
       query.name = new RegExp(search, 'i');
     }
     if (page !== "null" && limit !== "null") {
-      const results = await this.storesRepository.findOptions(query,{limit, skip:page*limit});
+      const results = await this.storesRepository.findOptions(query,{limit, skip:(page-1)*limit});
       stores =  plainToInstance(StoresReturnDTO, results);
     } else {
       const results = await this.storesRepository.find(query);
@@ -68,12 +68,10 @@ export class StoresService {
           const new_menu = store.menu.filter((menu)=> {
             return (menu['price'] <= maxPrice && menu['price'] >= minPrice)
           })
-          if(new_menu.length !== 0){
-            new_stores.push({name: store.name, state:store.state, city:store.city,
-              category: store.category, address: store.address, tel:store.tel,
-              menu: new_menu 
-                })
-            }
+          new_stores.push({id: store.id, name: store.name, state:store.state, city:store.city,
+            category: store.category, address: store.address, tel:store.tel,
+            menu: new_menu , likes: store.likes
+              })
           }
         }
       )

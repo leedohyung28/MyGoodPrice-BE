@@ -14,13 +14,6 @@ import { GetStoresQueryDTO } from './query.DTO';
 export class StoresController {
   constructor(private readonly storeService: StoresService) {}
 
-  async validatePage(page: number, limit: number) {
-    const totalPages = Math.ceil(8007 / limit);
-    if (page > totalPages) {
-      throw new BadRequestException('페이지의 끝을 넘었습니다.');
-    }
-  }
-
   @Get(':storeId')
   async getStore(
     @Param('storeId') storeId: string,
@@ -32,11 +25,10 @@ export class StoresController {
   async getStores(
     @Query() query: GetStoresQueryDTO
   ): Promise<StoresReturnDTO[] | void> {
-      const {page, limit} = query
-      if(page !== "null" && limit !== "null"){
-        await this.validatePage(page,limit)
-      }
-
+    const {page} = query
+    if (page !== "null" && page < 1) {
+      throw new BadRequestException('Page number must be greater than or equal to 1.');
+    }
       return await this.storeService.getStoresBy(query);
     } 
 }
