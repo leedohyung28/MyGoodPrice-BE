@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Response } from '@nestjs/common';
 import { StoresRepository } from './stores.repository';
 import { plainToInstance } from 'class-transformer';
 import { StoreReturnDTO, StoresReturnDTO } from './stores.DTO';
@@ -40,27 +40,27 @@ export class StoresService {
     const query: any = {};
     let stores = [];
 
-    if (category && category !== "null") {
+    if (category !== "null") {
       query.category = category;
     } 
-    if (location && location !== "null") {
+    if (location !== "null") {
       const state = location.split(' ')[0]
       const city = location.split(' ')[1]
       query.state = state;
       query.city = city;
     }
-    if (search && search !== "null") {
+    if (search !== "null") {
       query.name = new RegExp(search, 'i');
     }
-    if (page && limit && page !== "null" && limit !== "null") {
-      const results = await this.storesRepository.findOptions(query,{limit, skip:page});
+    if (page !== "null" && limit !== "null") {
+      const results = await this.storesRepository.findOptions(query,{limit, skip:page*limit});
       stores =  plainToInstance(StoresReturnDTO, results);
     } else {
       const results = await this.storesRepository.find(query);
       stores =  plainToInstance(StoresReturnDTO, results);
 
     }
-    if (minPrice && maxPrice && minPrice !== "null" && maxPrice !== "null") {
+    if (minPrice !== "null" && maxPrice !== "null") {
       const prevStores = stores;
       const new_stores = []
       prevStores.forEach((store)=> {
