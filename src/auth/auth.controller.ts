@@ -42,9 +42,12 @@ export class AuthController {
 
   @UseGuards(CheckTokenExpiryGuard)
   @Get('profile')
-  async getProfile(@Request() req) {
+  async getProfile(@Request() req, @Res() res: Response) {
     const accessToken = req.cookies['access_token'];
-    if (accessToken) return await this.userService.googleUser(accessToken);
+    if (accessToken) {
+      await this.userService.googleUser(accessToken);
+      res.redirect(`${this.configService.get('FE_URL')}/mypage`);
+    }
     throw new UnauthorizedException('No access token');
   }
 
