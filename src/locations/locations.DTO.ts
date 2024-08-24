@@ -40,6 +40,9 @@ export class LocationReturnDTO {
 @Exclude()
 export class DistanceStoresDTO {
 	@Expose()
+	id: string;
+
+	@Expose()
 	name: string;
 
 	@Expose()
@@ -58,7 +61,7 @@ export class DistanceStoresDTO {
     tel: string;
 
 	@Expose()
-    menu: string;
+    menu: any[];
 
 	@Expose()
     likes: number; 
