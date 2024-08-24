@@ -45,8 +45,10 @@ export class AuthController {
   async getProfile(@Request() req, @Res() res: Response) {
     const accessToken = req.cookies['access_token'];
     if (accessToken) {
-      await this.userService.googleUser(accessToken);
-      res.redirect(`${this.configService.get('FE_URL')}/mypage`);
+      const userProfile = await this.userService.googleUser(accessToken);
+      return res.json({
+        userProfile,
+      });
     }
     throw new UnauthorizedException('No access token');
   }
@@ -57,6 +59,6 @@ export class AuthController {
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
     this.authService.revokeGoogleToken(refreshToken);
-    res.redirect(this.configService.get('BACKEND_URL'));
+    res.redirect(`${this.configService.get('FE_URL')}/mypage`);
   }
 }
