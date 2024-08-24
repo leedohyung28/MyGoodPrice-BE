@@ -24,7 +24,7 @@ export class StoreReturnDTO {
     tel: string;
 
 	@Expose()
-    menu: string;
+    menu: any[];
 
 	@Expose()
     likes: number; 

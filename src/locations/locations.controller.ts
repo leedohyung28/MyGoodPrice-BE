@@ -3,8 +3,8 @@ import {
   Get,
   Query } from '@nestjs/common';
 import { LocationsService } from './locations.service';
-import { StoreReturnDTO } from 'src/stores/stores.DTO';
 import { GetStoresByDistanceDTO } from './query.DTO';
+import { DistanceStoresDTO } from './locations.DTO';
 
 @Controller('locations')
 export class LocationsController {
@@ -13,7 +13,7 @@ export class LocationsController {
   @Get()
   async getStoresByDistance(
     @Query() query : GetStoresByDistanceDTO
-  ) :Promise<StoreReturnDTO[]> {
+  ) :Promise<DistanceStoresDTO[]> {
     return await this.locationService.findInsideStores(query)
   }
 }
