@@ -3,8 +3,32 @@ import { Double } from "typeorm";
 
 @Exclude()
 export class LocationReturnDTO {
+	@Expose()
+	id: string;
+
+	@Expose()
+	name: string;
+
+	@Expose()
+	state: string;
+
     @Expose()
-    name : string;
+	city: string;
+
+    @Expose()
+	category: string;
+
+    @Expose()
+	address: string;
+
+    @Expose()
+    tel: string;
+
+	@Expose()
+    menu: string;
+
+	@Expose()
+    likes: number; 
 
 	@Expose()
 	longitude: number;
