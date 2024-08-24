@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, QueryOptions } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, QueryOptions } from 'mongoose';
 import { Stores, StoreDocument } from 'src/stores/stores.schema';
+import { pipeline } from 'stream';
 
 @Injectable()
 export class StoresRepository {
@@ -42,6 +43,14 @@ export class StoresRepository {
     }
   }
 
+  async aggregate( pipeline: PipelineStage[]): Promise<Stores[]> {
+    try{
+      return this.storeModel.aggregate(pipeline);
+    } catch(err) {
+      console.error("fail to aggregate", err)
+    }
+  }
+
   async findPrice(storeFilterQuery: FilterQuery<Stores>,minPrice,maxPrice): Promise<Stores[]> {
     try {
       return this.storeModel.find(storeFilterQuery, {
@@ -70,4 +79,5 @@ export class StoresRepository {
       throw err;
     }
   }
+
 }

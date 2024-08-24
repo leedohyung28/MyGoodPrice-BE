@@ -14,14 +14,14 @@ export class GetStoresQueryDTO {
   search: string;
 
   @IsDefined()
-  page: number | "null";
+  page: string;
 
   @IsDefined()
   limit: string;
 
   @IsDefined()
-  minPrice: number | "null";
+  minPrice: string;
 
   @IsDefined()
-  maxPrice: number | "null";
+  maxPrice: string;
 }

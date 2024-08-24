@@ -2,10 +2,10 @@ import { IsNumber, IsNumberString, IsDefined } from 'class-validator';
 
 export class GetStoresByDistanceDTO {
   @IsDefined()
-  longitude: number;
+  longitude: string;
 
   @IsDefined()
-  latitude: number;
+  latitude: string;
 
   @IsDefined()
   distance: number;
