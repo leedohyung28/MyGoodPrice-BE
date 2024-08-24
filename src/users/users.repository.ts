@@ -32,9 +32,9 @@ export class UsersRepository {
     }
   }
 
-  async findUser(userId: string): Promise<Users | null> {
+  async findUser(user: Users): Promise<Users | null> {
     try {
-      const existingUser = await this.userModel.findOne({ id: userId });
+      const existingUser = await this.userModel.findOne({ id: user.id });
       return existingUser;
     } catch (err) {
       console.error(err);
