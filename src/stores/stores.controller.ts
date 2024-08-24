@@ -25,8 +25,9 @@ export class StoresController {
   async getStores(
     @Query() query: GetStoresQueryDTO
   ): Promise<StoresReturnDTO[] | void> {
-    const {page} = query
-    if (page !== "null" && page < 1) {
+    let {page} = query
+    let page_new = parseInt(page)
+    if (page !== "null" && page_new < 1) {
       throw new BadRequestException('Page number must be greater than or equal to 1.');
     }
       return await this.storeService.getStoresBy(query);

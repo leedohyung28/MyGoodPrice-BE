@@ -10,5 +10,6 @@ export function getDistance(lat1:number,lng1:number,lat2:number,lng2:number) {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     let dis = 6371 * c; 
     dis = Math.round(dis * 1000) / 1000
+
     return dis
 }

@@ -23,24 +23,13 @@ export class Stores {
   tel: string;
 
   @Prop()
-  longitude?: string;
+  longitude?: number;
 
   @Prop()
-  latitude?: string;
+  latitude?: number;
 
-  @Prop({
-    type: String,
-    get: (data:string) => {
-      try{
-        return JSON.parse(data.replace(/'/g, '"'));
-      } catch(err){
-        return []
-      }
-    },
-    set: (data: any[]) => JSON.stringify(data),
-  })
+  @Prop()
   menu: any[];
-
 
   @Prop({ default: 0 })
   likes: number;
