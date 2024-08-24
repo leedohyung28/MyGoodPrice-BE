@@ -78,6 +78,25 @@ export class UsersService {
     }
   }
 
+  async kakaoUser(token: string): Promise<Users> {
+    try {
+      const profileResponse = await this.authService.getProfile(token);
+      const profileData = profileResponse.data;
+
+      const userData: Users = {
+        id: profileData.id,
+        name: profileData.name,
+        email: profileData.email,
+        provider: 'kakao',
+        likes: [],
+      };
+
+      return userData;
+    } catch (err) {
+      console.error('Failed to get Kakao user', err);
+    }
+  }
+
   async updateUserLike(token: string, likes: string[]): Promise<void> {
     try {
       const profileResponse = await this.authService.getProfile(token);

@@ -14,15 +14,9 @@ export class UsersController {
 
     if (user) {
       await this.usersService.addUser(user, 'kakao');
-      res.status(201).json({
-        message: 'User successfully added',
-        user,
-      });
+      res.status(201).json(user);
     } else {
       throw new Error('Cannot Get Kakao User');
-      res.status(400).json({
-        message: 'Cannot Get Kakao User',
-      });
     }
   }
 
