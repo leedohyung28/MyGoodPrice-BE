@@ -3,6 +3,7 @@ import { plainToInstance } from 'class-transformer';
 import { StoresService } from 'src/stores/stores.service';
 import { StoreReturnDTO } from 'src/stores/stores.DTO';
 import { GetStoresByDistanceDTO } from './query.DTO';
+import { LocationReturnDTO } from './locations.DTO';
 
 @Injectable()
 export class LocationsService {
@@ -10,7 +11,7 @@ export class LocationsService {
   
   async findInsideStores(
     queryParams: GetStoresByDistanceDTO,
-  ): Promise<StoreReturnDTO[]> {
+  ): Promise<LocationReturnDTO[]> {
     const { longitude, latitude, distance } = queryParams;
     const stores = await this.StoresService.getStoresByDistance(
       longitude,
@@ -18,6 +19,6 @@ export class LocationsService {
       distance,
     );
 
-    return plainToInstance(StoreReturnDTO, stores);
+    return plainToInstance(LocationReturnDTO, stores);
   }
 }
