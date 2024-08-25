@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { decode } from 'querystring';
 import { StoresReturnDTO } from 'src/stores/stores.DTO';
 import { Stores } from 'src/stores/stores.schema';
 import { StoresService } from 'src/stores/stores.service';
@@ -11,14 +12,14 @@ export class LikesService {
     private readonly userService: UsersService,
   ) {}
 
-  async findLikedStoresById(query) : Promise<StoresReturnDTO[]> {
+  async findLikedStoresById(query): Promise<StoresReturnDTO[]> {
     const likedId = JSON.parse(query.storeId);
-    const likedStores = []
+    const likedStores = [];
     for (const likedStoreId of likedId) {
       const store = await this.storeService.getStoreById(likedStoreId);
       likedStores.push(store);
     }
-    return likedStores
+    return likedStores;
   }
 
   async findAllLikedStores(req): Promise<Stores[]> {
@@ -71,5 +72,23 @@ export class LikesService {
     // const updatedLikes = likes.filter((storeId) => storeId !== body.storeId);
     // await this.userService.updateUserLike(accessToken, updatedLikes);
     await this.storeService.removeLike(body.storeId, store);
+  }
+
+  async findAllLikedStoresParams(query: string): Promise<Stores[]> {
+    const likedStores = [];
+    let storeIds: string[] = [];
+
+    try {
+      storeIds = JSON.parse(query); // query를 배열로 변환
+    } catch (error) {
+      console.error('Invalid JSON format:', error);
+    }
+
+    for (const likedStoreId of storeIds) {
+      const store = await this.storeService.getStoreById(likedStoreId);
+      likedStores.push(store);
+    }
+
+    return likedStores;
   }
 }
