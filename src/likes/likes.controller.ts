@@ -13,6 +13,11 @@ export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
   @Get()
+  async findLikedStoresById(@Body() body: {store_ids : string[]}) {
+    return this.likesService.findLikedStoresById(body);
+  }
+
+  @Get('/my')
   async findAllLikedStores(@Request() req): Promise<Stores[]> {
     return this.likesService.findAllLikedStores(req);
   }

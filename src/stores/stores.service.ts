@@ -10,6 +10,12 @@ import { getDistance } from 'src/common/utils/distance';
 export class StoresService {
   constructor(private readonly storesRepository: StoresRepository) {}
 
+  // async getAllStoresBy(store_list):Promise<StoresReturnDTO[]> {
+  //   const filter_store = { _id: {$in : store_list} }
+  //   const stores = await this.storesRepository.find(filter_store)
+  //   return plainToInstance(StoresReturnDTO, stores);
+  // }
+
   async getStoreById(id: string): Promise<StoreReturnDTO> {
     const store = await this.storesRepository.findById(id);
     return plainToInstance(StoreReturnDTO, store);
