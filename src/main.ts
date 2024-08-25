@@ -10,8 +10,13 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
 
+  const allowedOrigins = [
+    configService.get('FrontEnd_URL'),
+    configService.get('localhost'),
+  ];
+
   app.enableCors({
-    origin: configService.get('FE_URL'),
+    origin: allowedOrigins,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
