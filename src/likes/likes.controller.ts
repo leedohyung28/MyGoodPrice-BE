@@ -4,6 +4,7 @@ import {
   Delete, 
   Get, 
   Post, 
+  Query, 
   Request } from '@nestjs/common';
 import { Stores } from 'src/stores/stores.schema';
 import { LikesService } from './likes.service';
@@ -13,8 +14,8 @@ export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
   @Get()
-  async findLikedStoresById(@Body() body: {store_ids : string[]}) {
-    return this.likesService.findLikedStoresById(body);
+  async findLikedStoresById(@Query() storeId : string[]  ) {
+    return this.likesService.findLikedStoresById(storeId);
   }
 
   @Get('/my')

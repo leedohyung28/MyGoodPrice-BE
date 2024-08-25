@@ -11,15 +11,13 @@ export class LikesService {
     private readonly userService: UsersService,
   ) {}
 
-  async findLikedStoresById(body) : Promise<StoresReturnDTO[]> {
-
-    const likedId = body.store_ids
+  async findLikedStoresById(query) : Promise<StoresReturnDTO[]> {
+    const likedId = JSON.parse(query.storeId);
     const likedStores = []
     for (const likedStoreId of likedId) {
       const store = await this.storeService.getStoreById(likedStoreId);
       likedStores.push(store);
     }
-
     return likedStores
   }
 
