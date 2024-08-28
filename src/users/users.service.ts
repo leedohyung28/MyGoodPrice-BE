@@ -46,13 +46,13 @@ export class UsersService {
       try {
         res.cookie('access_token', accessToken, {
           httpOnly: true,
-          // sameSite: 'none',
-          // secure: false,
+          sameSite: 'none',
+          secure: true,
         });
         res.cookie('refresh_token', refreshToken, {
           httpOnly: true,
-          // sameSite: 'none',
-          // secure: false,
+          sameSite: 'none',
+          secure: true,
         });
         resolve();
       } catch (err) {
