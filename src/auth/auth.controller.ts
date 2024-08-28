@@ -46,7 +46,7 @@ export class AuthController {
     const accessToken = req.cookies['access_token'];
     if (accessToken) {
       const userProfile = await this.userService.googleUser(accessToken);
-      const redirectURL = `http://localhost:5173/mypage?profile=${encodeURIComponent(
+      const redirectURL = `${this.configService.get('FrontEnd_URL')}/mypage?profile=${encodeURIComponent(
         JSON.stringify({
           name: userProfile.name,
           email: userProfile.email,
