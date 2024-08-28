@@ -22,15 +22,14 @@ export class LikesService {
     return likedStores;
   }
 
-  async findAllLikedStores(req): Promise<Stores[]> {
+  async findAllKakaoLikedStores(req): Promise<Stores[]> {
     const accessToken = req.cookies['access_token'];
-    const likes = await this.userService.getUserLikes(accessToken);
+    const likes = await this.userService.getKakaoUserLikes(accessToken);
 
     const likedStores = [];
     if (likes) {
       for (const likedStoreId of likes) {
         const store = await this.storeService.getStoreById(likedStoreId);
-        console.log('store:', store);
         likedStores.push(store);
       }
     }
@@ -38,39 +37,92 @@ export class LikesService {
     return likedStores;
   }
 
-  async addLikedStore(req, body: { storeId: string }) {
-    // const accessToken = req.cookies['access_token'];
+  async addKakaoLikedStore(req, body: { storeId: string }) {
+    const accessToken = req.cookies['access_token'];
 
-    // if (!accessToken) {
-    //   throw new Error('Access token is missing');
-    // }
+    if (!accessToken) {
+      throw new Error('Access token is missing');
+    }
 
     const store = await this.storeService.getStoreById(body.storeId);
+
     if (!store) {
       throw new Error('No Store for this StoreId');
     }
 
-    // const likes = await this.userService.getUserLikes(accessToken);
-    // likes.push(body.storeId);
-    // await this.userService.updateUserLike(accessToken, likes);
+    const likes = await this.userService.getKakaoUserLikes(accessToken);
+    likes.push(body.storeId);
+    await this.userService.updateKakaoUserLike(accessToken, likes);
     await this.storeService.addLike(body.storeId, store);
   }
 
-  async deleteLikedStore(req, body: { storeId: string }) {
-    // const accessToken = req.cookies['access_token'];
+  async deleteKakaoLikedStore(req, body: { storeId: string }) {
+    const accessToken = req.cookies['access_token'];
 
-    // if (!accessToken) {
-    //   throw new Error('Access token is missing');
-    // }
+    if (!accessToken) {
+      throw new Error('Access token is missing');
+    }
 
     const store = await this.storeService.getStoreById(body.storeId);
     if (!store) {
       throw new Error('No Store for this StoreId');
     }
 
-    // const likes = await this.userService.getUserLikes(accessToken);
-    // const updatedLikes = likes.filter((storeId) => storeId !== body.storeId);
-    // await this.userService.updateUserLike(accessToken, updatedLikes);
+    const likes = await this.userService.getKakaoUserLikes(accessToken);
+    const updatedLikes = likes.filter((storeId) => storeId !== body.storeId);
+    await this.userService.updateKakaoUserLike(accessToken, updatedLikes);
+    await this.storeService.removeLike(body.storeId, store);
+  }
+
+  async findAllGoogleLikedStores(req): Promise<Stores[]> {
+    const accessToken = req.cookies['access_token'];
+    const likes = await this.userService.getGoogleUserLikes(accessToken);
+
+    const likedStores = [];
+    if (likes) {
+      for (const likedStoreId of likes) {
+        const store = await this.storeService.getStoreById(likedStoreId);
+        likedStores.push(store);
+      }
+    }
+
+    return likedStores;
+  }
+
+  async addGoogleLikedStore(req, body: { storeId: string }) {
+    const accessToken = req.cookies['access_token'];
+
+    if (!accessToken) {
+      throw new Error('Access token is missing');
+    }
+
+    const store = await this.storeService.getStoreById(body.storeId);
+
+    if (!store) {
+      throw new Error('No Store for this StoreId');
+    }
+
+    const likes = await this.userService.getGoogleUserLikes(accessToken);
+    likes.push(body.storeId);
+    await this.userService.updateGoogleUserLike(accessToken, likes);
+    await this.storeService.addLike(body.storeId, store);
+  }
+
+  async deleteGoogleLikedStore(req, body: { storeId: string }) {
+    const accessToken = req.cookies['access_token'];
+
+    if (!accessToken) {
+      throw new Error('Access token is missing');
+    }
+
+    const store = await this.storeService.getStoreById(body.storeId);
+    if (!store) {
+      throw new Error('No Store for this StoreId');
+    }
+
+    const likes = await this.userService.getGoogleUserLikes(accessToken);
+    const updatedLikes = likes.filter((storeId) => storeId !== body.storeId);
+    await this.userService.updateGoogleUserLike(accessToken, updatedLikes);
     await this.storeService.removeLike(body.storeId, store);
   }
 

@@ -46,19 +46,40 @@ export class AuthController {
     const accessToken = req.cookies['access_token'];
     if (accessToken) {
       const userProfile = await this.userService.googleUser(accessToken);
-      return res.json({
-        userProfile,
-      });
+      const redirectURL = `http://localhost:5173/mypage?profile=${encodeURIComponent(
+        JSON.stringify({
+          name: userProfile.name,
+          email: userProfile.email,
+          id: userProfile.id,
+        }),
+      )}`;
+
+      return res.redirect(redirectURL);
     }
     throw new UnauthorizedException('No access token');
   }
 
   @Get('logout')
   logout(@Req() req, @Res() res: Response) {
-    const refreshToken = req.cookies['refresh_token'];
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
-    this.authService.revokeGoogleToken(refreshToken);
-    res.redirect(`${this.configService.get('FE_URL')}/mypage`);
+    try {
+      const accessToken = req.cookies['access_token'];
+      res.clearCookie('access_token');
+      res.clearCookie('refresh_token');
+      this.authService.revokeGoogleToken(accessToken);
+      res.status(200).send({ message: 'Logout Success' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ message: 'Logout Failed' });
+    }
+  }
+
+  @Get('token')
+  findToken(@Req() req) {
+    const accessToken = req.cookies['access_token'];
+    if (accessToken) {
+      return accessToken;
+    } else {
+      return null;
+    }
   }
 }

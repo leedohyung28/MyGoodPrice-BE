@@ -35,9 +35,10 @@ export class UsersRepository {
   async findUser(user: Users): Promise<Users | null> {
     try {
       const existingUser = await this.userModel.findOne({ id: user.id });
+
       return existingUser;
     } catch (err) {
-      console.error(err);
+      console.error('Cannot Find User from DB : ', err);
       return null;
     }
   }
@@ -67,8 +68,7 @@ export class UsersRepository {
     await this.userModel.updateOne({ id }, updateData).exec();
   }
 
-  async clearCookie(req: Request, res: Response) {
-    const refreshToken = req.cookies['refresh_token'];
+  async clearCookie(res: Response) {
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
   }

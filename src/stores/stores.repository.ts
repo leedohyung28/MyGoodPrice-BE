@@ -22,7 +22,7 @@ export class StoresRepository {
     try {
       return this.storeModel.findById(storeFilterQuery);
     } catch (err) {
-      console.log(err);
+      console.error('Cannot find with ID : ', err);
     }
   }
 
@@ -34,24 +34,33 @@ export class StoresRepository {
     }
   }
 
-
-  async findOptions(storeFilterQuery: FilterQuery<Stores>, QueryOptions): Promise<Stores[]> {
+  async findOptions(
+    storeFilterQuery: FilterQuery<Stores>,
+    QueryOptions,
+  ): Promise<Stores[]> {
     try {
-      return this.storeModel.find(storeFilterQuery).skip(QueryOptions["skip"]).limit(QueryOptions["limit"]);
+      return this.storeModel
+        .find(storeFilterQuery)
+        .skip(QueryOptions['skip'])
+        .limit(QueryOptions['limit']);
     } catch (err) {
       console.error('Failed to fine : ', err);
     }
   }
 
-  async aggregate( pipeline: PipelineStage[]): Promise<Stores[]> {
-    try{
+  async aggregate(pipeline: PipelineStage[]): Promise<Stores[]> {
+    try {
       return this.storeModel.aggregate(pipeline);
-    } catch(err) {
-      console.error("fail to aggregate", err)
+    } catch (err) {
+      console.error('fail to aggregate', err);
     }
   }
 
-  async findPrice(storeFilterQuery: FilterQuery<Stores>,minPrice,maxPrice): Promise<Stores[]> {
+  async findPrice(
+    storeFilterQuery: FilterQuery<Stores>,
+    minPrice,
+    maxPrice,
+  ): Promise<Stores[]> {
     try {
       return this.storeModel.find(storeFilterQuery, {
         name: 1,
@@ -59,8 +68,8 @@ export class StoresRepository {
         city: 1,
         category: 1,
         address: 1,
-        'menu.$': 1  
-    });
+        'menu.$': 1,
+      });
     } catch (err) {
       console.error('Failed to fine : ', err);
     }
@@ -79,5 +88,4 @@ export class StoresRepository {
       throw err;
     }
   }
-
 }

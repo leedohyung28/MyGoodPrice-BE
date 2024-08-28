@@ -5,27 +5,63 @@ import { UsersRepository } from './users.repository';
 import { Request, Response } from 'express';
 import axios from 'axios';
 import { UserDataDTO } from './users.DTO';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly authService: AuthService,
     private readonly usersRepository: UsersRepository,
+    private readonly configService: ConfigService,
   ) {}
 
-  async putCookie(req: Request, res: Response): Promise<void> {
-    const accessToken = req.body.access_token;
-    const refreshToken = req.body.refresh_token;
+  async getCookie(req: Request, res: Response) {
+    try {
+      const response = axios.post(
+        `https://kauth.kakao.com/oauth/token`,
+        {
+          grant_type: 'authorization_code',
+          client_id: this.configService.get('KAKAO_CLIENT_ID'),
+          redirect_uri: this.configService.get('KAKAO_REDIRECT_URI'),
+          code: req.body.code,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+          },
+        },
+      );
+      return response;
+    } catch (err) {
+      console.error('Failed to Get Cookie in Kakao : ', err);
+    }
+  }
 
-    res.cookie('access_token', accessToken, { httpOnly: true });
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
+  async putCookie(
+    accessToken: string,
+    refreshToken: string,
+    res: Response,
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        res.cookie('access_token', accessToken, {
+          httpOnly: true,
+          // sameSite: 'none',
+          // secure: false,
+        });
+        res.cookie('refresh_token', refreshToken, {
+          httpOnly: true,
+          // sameSite: 'none',
+          // secure: false,
+        });
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
     });
   }
 
-  async getKakaoUser(req: Request): Promise<UserDataDTO | null> {
-    const accessToken = req.body.access_token;
-
+  async getKakaoUser(accessToken: string): Promise<UserDataDTO | null> {
     try {
       const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
         headers: {
@@ -34,7 +70,6 @@ export class UsersService {
       });
 
       const userData = response.data;
-
       const user = new UserDataDTO();
       user.id = userData.id;
       user.email = userData.id;
@@ -80,8 +115,8 @@ export class UsersService {
 
   async kakaoUser(token: string): Promise<Users> {
     try {
-      const profileResponse = await this.authService.getProfile(token);
-      const profileData = profileResponse.data;
+      const profileResponse = await this.getKakaoUser(token);
+      const profileData = profileResponse;
 
       const userData: Users = {
         id: profileData.id,
@@ -97,10 +132,10 @@ export class UsersService {
     }
   }
 
-  async updateUserLike(token: string, likes: string[]): Promise<void> {
+  async updateKakaoUserLike(token: string, likes: string[]): Promise<void> {
     try {
-      const profileResponse = await this.authService.getProfile(token);
-      const profileData = profileResponse.data;
+      const kakaoProfileResponse = await this.kakaoUser(token);
+      const profileData = kakaoProfileResponse;
 
       await this.usersRepository.updateUser(
         profileData.id,
@@ -114,10 +149,27 @@ export class UsersService {
     }
   }
 
-  async getUserLikes(token: string): Promise<string[] | null> {
+  async updateGoogleUserLike(token: string, likes: string[]): Promise<void> {
     try {
-      const profileResponse = await this.authService.getProfile(token);
-      const profileData = profileResponse.data;
+      const googleProfileResponse = await this.authService.getProfile(token);
+      const profileData = googleProfileResponse.data;
+
+      await this.usersRepository.updateUser(
+        profileData.id,
+        undefined,
+        undefined,
+        undefined,
+        likes,
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async getKakaoUserLikes(token: string): Promise<string[] | null> {
+    try {
+      const kakaoProfileResponse = await this.kakaoUser(token);
+      const profileData = kakaoProfileResponse;
 
       const user = await this.usersRepository.findUser(profileData);
       if (user) {
@@ -127,11 +179,41 @@ export class UsersService {
         return null;
       }
     } catch (err) {
-      console.error('Failed to get user likes :', err);
+      console.error('Failed to get Kakao user likes :', err);
     }
   }
 
-  async logoutUser(req: Request, res: Response) {
-    await this.usersRepository.clearCookie(req, res);
+  async getGoogleUserLikes(token: string): Promise<string[] | null> {
+    try {
+      const googleProfileResponse = await this.authService.getProfile(token);
+      const profileData = googleProfileResponse.data;
+
+      const user = await this.usersRepository.findUser(profileData);
+      if (user) {
+        return user.likes;
+      } else {
+        console.error('User not found');
+        return null;
+      }
+    } catch (err) {
+      console.error('Failed to get Google user likes :', err);
+    }
+  }
+
+  async logoutUser(token: string, res: Response) {
+    try {
+      const id = await axios.post(
+        'https://kapi.kakao.com/v1/user/logout',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      await this.usersRepository.clearCookie(res);
+    } catch (err) {
+      console.error('Failed to Logout : ', err);
+    }
   }
 }
