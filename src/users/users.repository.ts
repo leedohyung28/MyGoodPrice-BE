@@ -34,7 +34,7 @@ export class UsersRepository {
 
   async findUser(user: Users): Promise<Users | null> {
     try {
-      const existingUser = await this.userModel.findOne({ id: user.id });
+      const existingUser = await this.userModel.findOne({ email: user.email });
 
       return existingUser;
     } catch (err) {

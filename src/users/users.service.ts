@@ -113,6 +113,26 @@ export class UsersService {
     }
   }
 
+  async makeGoogleUser(
+    id: string,
+    name: string,
+    email: string,
+  ): Promise<Users> {
+    try {
+      const userData: Users = {
+        id,
+        name,
+        email,
+        provider: 'google',
+        likes: [],
+      };
+
+      return this.usersRepository.addUser(userData);
+    } catch (err) {
+      console.error('Failed to save user', err);
+    }
+  }
+
   async kakaoUser(token: string): Promise<Users> {
     try {
       const profileResponse = await this.getKakaoUser(token);
@@ -155,7 +175,7 @@ export class UsersService {
       const profileData = googleProfileResponse.data;
 
       await this.usersRepository.updateUser(
-        profileData.id,
+        profileData.email,
         undefined,
         undefined,
         undefined,

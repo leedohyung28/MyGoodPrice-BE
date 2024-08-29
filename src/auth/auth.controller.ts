@@ -65,7 +65,6 @@ export class AuthController {
       const accessToken = req.cookies['access_token'];
       res.clearCookie('access_token');
       res.clearCookie('refresh_token');
-      this.authService.revokeGoogleToken(accessToken);
       res.status(200).send({ message: 'Logout Success' });
     } catch (err) {
       console.error(err);

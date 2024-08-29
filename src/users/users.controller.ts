@@ -44,4 +44,21 @@ export class UsersController {
       res.status(500).send({ message: 'Logout Failed' });
     }
   }
+
+  @Post('google')
+  async addGoogleUser(@Request() req, @Res() res: Response) {
+    await this.usersService.putCookie(
+      req.body.access_token,
+      req.body.refresh_token,
+      res,
+    );
+
+    await this.usersService.makeGoogleUser(
+      req.body.id,
+      req.body.name,
+      req.body.email,
+    );
+
+    return res.status(200).end();
+  }
 }
